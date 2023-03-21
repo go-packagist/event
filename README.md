@@ -63,7 +63,7 @@ func main() {
 	d.Listen(e, &Listener1{})
 	d.Listen(e, &Listener2{})
 
-	d.Dispatch(e) // echo: listener1:event (because listener1 set Stop to true)
+	d.Dispatch(e) // result: listener1:event (because listener1 set Stop to true)
 }
 ```
 
