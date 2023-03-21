@@ -1,5 +1,6 @@
-# :package-name
+# event
 
+![Go](https://badgen.net/badge/Go/%3E=1.16/orange)
 [![Go Version](https://badgen.net/github/release/go-packagist/:package-name/stable)](https://github.com/go-packagist/:package-name/releases)
 [![GoDoc](https://pkg.go.dev/badge/github.com/go-packagist/:package-name)](https://pkg.go.dev/github.com/go-packagist/:package-name)
 [![codecov](https://codecov.io/gh/go-packagist/:package-name/branch/master/graph/badge.svg?token=5TWGQ9DIRU)](https://codecov.io/gh/go-packagist/:package-name)
@@ -10,13 +11,59 @@
 ## Installation
 
 ```bash
-go get github.com/go-packagist/:package-name
+go get github.com/go-packagist/event
 ```
 
 ## Usage
 
 ```go
-// TODO: Write usage instructions
+package main
+
+import "github.com/go-packagist/event"
+
+type Event struct {
+	Stop bool
+}
+
+func (e *Event) IsStop() bool {
+	return e.Stop
+}
+
+func (e *Event) Val() string {
+	return "event"
+}
+
+type Listener1 struct {
+}
+
+func (l *Listener1) Handle(event event.Event) {
+	println("listener1:" + event.(*Event).Val())
+
+	event.(*Event).Stop = true
+}
+
+type Listener2 struct{}
+
+func (l *Listener2) Handle(event event.Event) {
+	println("listener2:" + event.(*Event).Val())
+}
+
+var _ event.Event = (*Event)(nil)
+var _ event.Listener = (*Listener1)(nil)
+var _ event.Listener = (*Listener2)(nil)
+
+func main() {
+	d := event.NewDispatcher()
+
+	e := &Event{
+		Stop: false,
+	}
+
+	d.Listen(e, &Listener1{})
+	d.Listen(e, &Listener2{})
+
+	d.Dispatch(e) // echo: listener1:event (because listener1 set Stop to true)
+}
 ```
 
 ## License
