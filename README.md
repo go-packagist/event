@@ -42,7 +42,8 @@ func (l *Listener1) Handle(event event.Event) {
 	event.(*Event).Stop = true
 }
 
-type Listener2 struct{}
+type Listener2 struct{
+}
 
 func (l *Listener2) Handle(event event.Event) {
 	println("listener2:" + event.(*Event).Val())
