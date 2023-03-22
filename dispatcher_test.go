@@ -109,3 +109,27 @@ func TestFlush(t *testing.T) {
 	assert.Equal(t, 0, len(d.GetListeners(event1)))
 	assert.Equal(t, 0, len(d.GetListeners(event2)))
 }
+
+func TestUniversalEvent(t *testing.T) {
+
+	d := NewDispatcher()
+
+	// u1
+	u1, listener1, listener2 := &UniversalEvent{}, &Test1Listener{}, &Test2Listener{}
+	assert.False(t, u1.IsStop())
+
+	d.Listen(u1, listener1)
+	d.Listen(u1, listener2)
+	d.Dispatch(u1)
+
+	assert.Equal(t, "Test1 Done", listener1.Val)
+	assert.Equal(t, "Test2 Done", listener2.Val)
+
+	// u2
+	u2, listener3 := &UniversalEvent{}, &Test1Listener{}
+
+	d.Listen(u2, listener3)
+	d.Dispatch(u2)
+
+	assert.Equal(t, "Test1 Done", listener3.Val)
+}
