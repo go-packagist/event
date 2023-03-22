@@ -111,7 +111,6 @@ func TestFlush(t *testing.T) {
 }
 
 func TestUniversalEvent(t *testing.T) {
-
 	d := NewDispatcher()
 
 	// u1
