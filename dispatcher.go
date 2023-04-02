@@ -8,7 +8,7 @@ type Dispatcher struct {
 // NewDispatcher create new dispatcher
 func NewDispatcher() *Dispatcher {
 	return &Dispatcher{
-		Listeners: make(map[Event][]Listener),
+		Listeners: make(map[Event][]Listener, 0),
 	}
 }
 
