@@ -34,6 +34,7 @@ var _ event.Listener = (*Listener1)(nil)
 var _ event.Listener = (*Listener2)(nil)
 
 func main() {
+	// use dispatcher
 	d := event.NewDispatcher()
 
 	e := &Event{
@@ -44,4 +45,9 @@ func main() {
 	d.Listen(e, &Listener2{})
 
 	d.Dispatch(e) // echo: listener1:event (because listener1 set Stop to true)
+
+	// OR: use instance
+	event.Listen(e, &Listener1{})
+	event.Listen(e, &Listener2{})
+	event.Dispatch(e)
 }
