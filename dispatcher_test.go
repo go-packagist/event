@@ -111,10 +111,14 @@ func TestFlush(t *testing.T) {
 }
 
 func TestUniversalEvent(t *testing.T) {
+	type testEvent struct {
+		*Eventable
+	}
+
 	d := NewDispatcher()
 
 	// u1
-	u1, listener1, listener2 := &UniversalEvent{}, &Test1Listener{}, &Test2Listener{}
+	u1, listener1, listener2 := &testEvent{}, &Test1Listener{}, &Test2Listener{}
 	assert.False(t, u1.IsStop())
 
 	d.Listen(u1, listener1)
@@ -125,7 +129,7 @@ func TestUniversalEvent(t *testing.T) {
 	assert.Equal(t, "Test2 Done", listener2.Val)
 
 	// u2
-	u2, listener3 := &UniversalEvent{}, &Test1Listener{}
+	u2, listener3 := &testEvent{}, &Test1Listener{}
 
 	d.Listen(u2, listener3)
 	d.Dispatch(u2)

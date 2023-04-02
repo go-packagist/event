@@ -42,8 +42,7 @@ func (l *Listener1) Handle(event event.Event) {
 	event.(*Event).Stop = true
 }
 
-type Listener2 struct{
-}
+type Listener2 struct{}
 
 func (l *Listener2) Handle(event event.Event) {
 	println("listener2:" + event.(*Event).Val())
@@ -54,6 +53,7 @@ var _ event.Listener = (*Listener1)(nil)
 var _ event.Listener = (*Listener2)(nil)
 
 func main() {
+	// use dispatcher
 	d := event.NewDispatcher()
 
 	e := &Event{
@@ -63,7 +63,12 @@ func main() {
 	d.Listen(e, &Listener1{})
 	d.Listen(e, &Listener2{})
 
-	d.Dispatch(e) // result: listener1:event (because listener1 set Stop to true)
+	d.Dispatch(e) // echo: listener1:event (because listener1 set Stop to true)
+
+	// OR: use instance
+	event.Listen(e, &Listener1{})
+	event.Listen(e, &Listener2{})
+	event.Dispatch(e)
 }
 ```
 
