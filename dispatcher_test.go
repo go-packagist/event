@@ -64,8 +64,8 @@ func TestDispatcher_Dispatch(t *testing.T) {
 	// event finish
 	event1, listener11, listener12 := newTestEvent("test1"), &Test1Listener{}, &Test2Listener{}
 
-	d.Listen(event1, listener11)
-	d.Listen(event1, listener12)
+	d.Listen("test1", listener11)
+	d.Listen("test1", listener12)
 
 	d.Dispatch(event1)
 
@@ -75,8 +75,8 @@ func TestDispatcher_Dispatch(t *testing.T) {
 	// event stop
 	event2, listener21, listener22 := newTestEvent("test2"), &Test1Listener{}, &Test2Listener{}
 
-	d.Listen(event2, listener21)
-	d.Listen(event2, listener22)
+	d.Listen("test2", listener21)
+	d.Listen("test2", listener22)
 
 	listener21.Stop()
 
@@ -89,34 +89,34 @@ func TestDispatcher_Dispatch(t *testing.T) {
 func TestFlush(t *testing.T) {
 	d := NewDispatcher()
 
-	event1, event2, listener1, listener2 := newTestEvent("test1"), newTestEvent("test2"), &Test1Listener{}, &Test2Listener{}
+	listener1, listener2 := &Test1Listener{}, &Test2Listener{}
 
-	d.Listen(event1, listener1)
-	d.Listen(event1, listener2)
+	d.Listen("test1", listener1)
+	d.Listen("test1", listener2)
 
-	d.Listen(event2, listener1)
-	d.Listen(event2, listener2)
+	d.Listen("test2", listener1)
+	d.Listen("test2", listener2)
 
-	assert.Equal(t, 2, len(d.GetListeners(event1)))
-	assert.Equal(t, 2, len(d.GetListeners(event2)))
+	assert.Equal(t, 2, len(d.GetListeners("test1")))
+	assert.Equal(t, 2, len(d.GetListeners("test2")))
 
 	// Flush
-	d.Flush(event1)
+	d.Flush("test1")
 
-	assert.Equal(t, 0, len(d.GetListeners(event1)))
-	assert.Equal(t, 2, len(d.GetListeners(event2)))
+	assert.Equal(t, 0, len(d.GetListeners("test1")))
+	assert.Equal(t, 2, len(d.GetListeners("test2")))
 
 	// FlushAll
-	d.Listen(event1, listener1)
-	d.Listen(event1, listener2)
+	d.Listen("test1", listener1)
+	d.Listen("test1", listener2)
 
-	assert.Equal(t, 2, len(d.GetListeners(event1)))
-	assert.Equal(t, 2, len(d.GetListeners(event2)))
+	assert.Equal(t, 2, len(d.GetListeners("test1")))
+	assert.Equal(t, 2, len(d.GetListeners("test2")))
 
 	d.FlushAll()
 
-	assert.Equal(t, 0, len(d.GetListeners(event1)))
-	assert.Equal(t, 0, len(d.GetListeners(event2)))
+	assert.Equal(t, 0, len(d.GetListeners("test1")))
+	assert.Equal(t, 0, len(d.GetListeners("test2")))
 }
 
 type testEventable struct {
@@ -134,8 +134,8 @@ func TestEventable(t *testing.T) {
 	u1, listener1, listener2 := &testEventable{}, &Test1Listener{}, &Test2Listener{}
 	assert.False(t, u1.IsStop())
 
-	d.Listen(u1, listener1)
-	d.Listen(u1, listener2)
+	d.Listen("test", listener1)
+	d.Listen("test", listener2)
 	d.Dispatch(u1)
 
 	assert.Equal(t, "Test1 Done", listener1.Val)
@@ -144,7 +144,7 @@ func TestEventable(t *testing.T) {
 	// u2
 	u2, listener3 := &testEventable{}, &Test1Listener{}
 
-	d.Listen(u2, listener3)
+	d.Listen("test", listener3)
 	d.Dispatch(u2)
 
 	assert.Equal(t, "Test1 Done", listener3.Val)
