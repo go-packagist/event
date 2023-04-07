@@ -13,13 +13,13 @@ func NewDispatcher() *Dispatcher {
 }
 
 // Listen add listener to event
-func (d *Dispatcher) Listen(event Event, listener Listener) {
-	d.Listeners[event.Name()] = append(d.Listeners[event.Name()], listener)
+func (d *Dispatcher) Listen(name string, listener Listener) {
+	d.Listeners[name] = append(d.Listeners[name], listener)
 }
 
 // Dispatch event to all listeners
 func (d *Dispatcher) Dispatch(event Event) {
-	for _, listener := range d.GetListeners(event) {
+	for _, listener := range d.GetListeners(event.Name()) {
 		if event.IsStop() {
 			return
 		}
@@ -29,13 +29,13 @@ func (d *Dispatcher) Dispatch(event Event) {
 }
 
 // GetListeners return all listeners of event
-func (d *Dispatcher) GetListeners(event Event) []Listener {
-	return d.Listeners[event.Name()]
+func (d *Dispatcher) GetListeners(name string) []Listener {
+	return d.Listeners[name]
 }
 
-// Flush remove all listeners of event
-func (d *Dispatcher) Flush(event Event) {
-	delete(d.Listeners, event.Name())
+// Flush remove listeners of event
+func (d *Dispatcher) Flush(name string) {
+	delete(d.Listeners, name)
 }
 
 // FlushAll remove all listeners

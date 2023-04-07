@@ -45,13 +45,13 @@ func main() {
 		Stop: false,
 	}
 
-	d.Listen(e, &Listener1{})
-	d.Listen(e, &Listener2{})
+	d.Listen("event", &Listener1{})
+	d.Listen("event", &Listener2{})
 
 	d.Dispatch(e) // echo: listener1:event (because listener1 set Stop to true)
 
 	// OR: use instance
-	event.Listen(e, &Listener1{})
-	event.Listen(e, &Listener2{})
+	event.Listen("event", &Listener1{})
+	event.Listen("event", &Listener2{})
 	event.Dispatch(e)
 }

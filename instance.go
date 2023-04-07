@@ -10,8 +10,8 @@ func GetDispatcher() *Dispatcher {
 	return instance
 }
 
-func Listen(event Event, listener Listener) {
-	GetDispatcher().Listen(event, listener)
+func Listen(name string, listener Listener) {
+	GetDispatcher().Listen(name, listener)
 }
 
 func Dispatch(event Event) {
