@@ -1,9 +1,13 @@
 package main
 
-import "github.com/go-packagist/event"
+import "github.com/go-packagist/event/v2"
 
 type Event struct {
 	Stop bool
+}
+
+func (e *Event) Name() string {
+	return "event"
 }
 
 func (e *Event) IsStop() bool {

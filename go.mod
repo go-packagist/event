@@ -1,4 +1,4 @@
-module github.com/go-packagist/event
+module github.com/go-packagist/event/v2
 
 go 1.20
 

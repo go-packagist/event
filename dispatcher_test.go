@@ -6,17 +6,26 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type TestEvent struct {
+type testEvent struct {
+	name   string
 	Stoped bool
 }
 
-var _ Event = (*TestEvent)(nil)
+var _ Event = (*testEvent)(nil)
 
-func (t *TestEvent) IsStop() bool {
+func newTestEvent(name string) Event {
+	return &testEvent{name: name}
+}
+
+func (t *testEvent) Name() string {
+	return t.name
+}
+
+func (t *testEvent) IsStop() bool {
 	return t.Stoped
 }
 
-func (t *TestEvent) Stop() {
+func (t *testEvent) SetStop() {
 	t.Stoped = true
 }
 
@@ -31,7 +40,7 @@ func (t *Test1Listener) Handle(event Event) {
 	t.Val = "Test1 Done"
 
 	if t.stop {
-		event.(*TestEvent).Stop()
+		event.(*testEvent).SetStop()
 	}
 }
 
@@ -53,7 +62,7 @@ func TestDispatcher_Dispatch(t *testing.T) {
 	d := NewDispatcher()
 
 	// event finish
-	event1, listener11, listener12 := &TestEvent{}, &Test1Listener{}, &Test2Listener{}
+	event1, listener11, listener12 := newTestEvent("test1"), &Test1Listener{}, &Test2Listener{}
 
 	d.Listen(event1, listener11)
 	d.Listen(event1, listener12)
@@ -64,7 +73,7 @@ func TestDispatcher_Dispatch(t *testing.T) {
 	assert.Equal(t, "Test2 Done", listener12.Val)
 
 	// event stop
-	event2, listener21, listener22 := &TestEvent{}, &Test1Listener{}, &Test2Listener{}
+	event2, listener21, listener22 := newTestEvent("test2"), &Test1Listener{}, &Test2Listener{}
 
 	d.Listen(event2, listener21)
 	d.Listen(event2, listener22)
@@ -80,7 +89,7 @@ func TestDispatcher_Dispatch(t *testing.T) {
 func TestFlush(t *testing.T) {
 	d := NewDispatcher()
 
-	event1, event2, listener1, listener2 := &TestEvent{}, &TestEvent{}, &Test1Listener{}, &Test2Listener{}
+	event1, event2, listener1, listener2 := newTestEvent("test1"), newTestEvent("test2"), &Test1Listener{}, &Test2Listener{}
 
 	d.Listen(event1, listener1)
 	d.Listen(event1, listener2)
@@ -110,15 +119,19 @@ func TestFlush(t *testing.T) {
 	assert.Equal(t, 0, len(d.GetListeners(event2)))
 }
 
-func TestUniversalEvent(t *testing.T) {
-	type testEvent struct {
-		*Eventable
-	}
+type testEventable struct {
+	*Eventable
+}
 
+func (t *testEventable) Name() string {
+	return "test"
+}
+
+func TestEventable(t *testing.T) {
 	d := NewDispatcher()
 
 	// u1
-	u1, listener1, listener2 := &testEvent{}, &Test1Listener{}, &Test2Listener{}
+	u1, listener1, listener2 := &testEventable{}, &Test1Listener{}, &Test2Listener{}
 	assert.False(t, u1.IsStop())
 
 	d.Listen(u1, listener1)
@@ -129,7 +142,7 @@ func TestUniversalEvent(t *testing.T) {
 	assert.Equal(t, "Test2 Done", listener2.Val)
 
 	// u2
-	u2, listener3 := &testEvent{}, &Test1Listener{}
+	u2, listener3 := &testEventable{}, &Test1Listener{}
 
 	d.Listen(u2, listener3)
 	d.Dispatch(u2)

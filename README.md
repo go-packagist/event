@@ -2,7 +2,7 @@
 
 ![Go](https://badgen.net/badge/Go/%3E=1.16/orange)
 [![Go Version](https://badgen.net/github/release/go-packagist/event/stable)](https://github.com/go-packagist/event/releases)
-[![GoDoc](https://pkg.go.dev/badge/github.com/go-packagist/event)](https://pkg.go.dev/github.com/go-packagist/event)
+[![GoDoc](https://pkg.go.dev/badge/github.com/go-packagist/event/v2)](https://pkg.go.dev/github.com/go-packagist/event/v2)
 [![codecov](https://codecov.io/gh/go-packagist/event/branch/master/graph/badge.svg?token=5TWGQ9DIRU)](https://codecov.io/gh/go-packagist/event)
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-packagist/event)](https://goreportcard.com/report/github.com/go-packagist/event)
 [![tests](https://github.com/go-packagist/event/actions/workflows/go.yml/badge.svg)](https://github.com/go-packagist/event/actions/workflows/go.yml)
@@ -11,7 +11,7 @@
 ## Installation
 
 ```bash
-go get github.com/go-packagist/event
+go get github.com/go-packagist/event/v2
 ```
 
 ## Usage
@@ -19,10 +19,14 @@ go get github.com/go-packagist/event
 ```go
 package main
 
-import "github.com/go-packagist/event"
+import "github.com/go-packagist/event/v2"
 
 type Event struct {
 	Stop bool
+}
+
+func (e *Event) Name() string {
+	return "event"
 }
 
 func (e *Event) IsStop() bool {
