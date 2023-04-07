@@ -64,8 +64,8 @@ func TestDispatcher_Dispatch(t *testing.T) {
 	// event finish
 	event1, listener11, listener12 := newTestEvent("test1"), &Test1Listener{}, &Test2Listener{}
 
-	d.Listen("test1", listener11)
-	d.Listen("test1", listener12)
+	d.Listen("test1")
+	d.Listen("test1", listener11, listener12)
 
 	d.Dispatch(event1)
 

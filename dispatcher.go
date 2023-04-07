@@ -13,8 +13,8 @@ func NewDispatcher() *Dispatcher {
 }
 
 // Listen add listener to event
-func (d *Dispatcher) Listen(name string, listener Listener) {
-	d.Listeners[name] = append(d.Listeners[name], listener)
+func (d *Dispatcher) Listen(name string, listener ...Listener) {
+	d.Listeners[name] = append(d.Listeners[name], listener...)
 }
 
 // Dispatch event to all listeners
