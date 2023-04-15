@@ -1,6 +1,8 @@
 package main
 
-import "github.com/go-packagist/event/v2"
+import (
+	"github.com/go-packagist/event/v3"
+)
 
 type Event struct {
 	Stop bool

@@ -12,6 +12,7 @@ type testEvent struct {
 }
 
 var _ Event = (*testEvent)(nil)
+var _ StoppableEvent = (*testEvent)(nil)
 
 func newTestEvent(name string) Event {
 	return &testEvent{name: name}
@@ -21,7 +22,7 @@ func (t *testEvent) Name() string {
 	return t.name
 }
 
-func (t *testEvent) IsStop() bool {
+func (t *testEvent) IsPropagationStopped() bool {
 	return t.Stoped
 }
 
@@ -117,35 +118,4 @@ func TestFlush(t *testing.T) {
 
 	assert.Equal(t, 0, len(d.GetListeners("test1")))
 	assert.Equal(t, 0, len(d.GetListeners("test2")))
-}
-
-type testEventable struct {
-	*Eventable
-}
-
-func (t *testEventable) Name() string {
-	return "test"
-}
-
-func TestEventable(t *testing.T) {
-	d := NewDispatcher()
-
-	// u1
-	u1, listener1, listener2 := &testEventable{}, &Test1Listener{}, &Test2Listener{}
-	assert.False(t, u1.IsStop())
-
-	d.Listen("test", listener1)
-	d.Listen("test", listener2)
-	d.Dispatch(u1)
-
-	assert.Equal(t, "Test1 Done", listener1.Val)
-	assert.Equal(t, "Test2 Done", listener2.Val)
-
-	// u2
-	u2, listener3 := &testEventable{}, &Test1Listener{}
-
-	d.Listen("test", listener3)
-	d.Dispatch(u2)
-
-	assert.Equal(t, "Test1 Done", listener3.Val)
 }
