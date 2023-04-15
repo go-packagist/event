@@ -19,7 +19,10 @@ go get github.com/go-packagist/event/v3
 ```go
 package main
 
-import "github.com/go-packagist/event/v3"
+import (
+	"fmt"
+	"github.com/go-packagist/event/v3"
+)
 
 type Event struct {
 	Stop bool
@@ -66,6 +69,9 @@ func main() {
 
 	d.Listen("event", &Listener1{})
 	d.Listen("event", &Listener2{})
+	d.Listen("event", event.ListenerFunc(func(event event.Event) {
+		fmt.Println(event.Name())
+	}))
 
 	d.Dispatch(e) // echo: listener1:event (because listener1 set Stop to true)
 
