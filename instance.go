@@ -1,10 +1,15 @@
 package event
 
+import "sync"
+
 var instance *Dispatcher
+var once sync.Once
 
 func GetDispatcher() *Dispatcher {
 	if instance == nil {
-		instance = NewDispatcher()
+		once.Do(func() {
+			instance = NewDispatcher()
+		})
 	}
 
 	return instance
