@@ -31,7 +31,7 @@ func (d *Dispatcher) Listen(name string, listener ...Listener) {
 // Dispatch event to all listeners
 func (d *Dispatcher) Dispatch(event Event) {
 	for _, listener := range d.GetListeners(event.Name()) {
-		if event.(StoppableEvent) != nil && event.(StoppableEvent).IsPropagationStopped() {
+		if e, ok := event.(StoppableEvent); ok && e.IsPropagationStopped() {
 			return
 		}
 
