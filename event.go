@@ -5,6 +5,7 @@ type Event interface {
 	Name() string
 }
 
+// StoppableEvent interface
 type StoppableEvent interface {
 	IsPropagationStopped() bool
 }

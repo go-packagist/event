@@ -119,3 +119,13 @@ func TestFlush(t *testing.T) {
 	assert.Equal(t, 0, len(d.GetListeners("test1")))
 	assert.Equal(t, 0, len(d.GetListeners("test2")))
 }
+
+func TestDispatcher_ListenerFunc(t *testing.T) {
+	d := NewDispatcher()
+
+	event1 := newTestEvent("test1")
+
+	d.Listen("test1", ListenerFunc(func(event Event) {
+		assert.Equal(t, event1, event)
+	}))
+}
